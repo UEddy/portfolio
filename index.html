@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ediong Udotong</title>
+<meta name="description" content="Ediong Udotong (Eddy) builds software that moves money and puts AI agents under limits a contract enforces. Selected builds with their proof.">
+<meta property="og:title" content="Ediong Udotong">
+<meta property="og:description" content="Software that moves money, and AI agents under limits they can't talk their way out of.">
+<meta property="og:url" content="https://ueddy.vercel.app/">
+<link rel="canonical" href="https://ueddy.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@DeFiRanch">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,500..900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: plain, exact, a builder showing receipts rather than adjectives.
+IDEA: a till receipt. Every build prints its proof: the number, the transaction, the test run.
+PICTURE: a stack of thermal receipts feeding out of a slot on a cobalt field.
+COLOUR and TYPE: cobalt field, paper white, deep ink, one highlighter yellow; Anybody (width-variable) for names, Plex Sans for reading, Plex Mono only for real hashes and commands.
+LAYOUT: cobalt hero with the receipt stack, one featured build, two side by side, then a ledger of the rest, about, contact.
+*/
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#0d1226);
+--paper:light-dark(#ffffff,#f4f5f0);
+--ink:light-dark(#0d1226,#e9ecf7);
+--pink:#0d1226;
+--muted:light-dark(#4b5370,#a3abc8);
+--line:light-dark(#dfe3ee,#262d4a);
+--cobalt:#2340d9;
+--cobalt2:light-dark(#1a31b0,#16278f);
+--hi:#f7e14b;
+--soft:light-dark(#f2f4fb,#141a33)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--hi);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(40px,6vw,96px) max(5vw,18px)}
+h1,h2,h3{font-family:Anybody,system-ui,sans-serif;font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:clamp(32px,4.4vw,52px);font-stretch:120%;letter-spacing:-.01em}
+h3{font-size:clamp(26px,3vw,34px);font-stretch:110%}
+p{margin:0 0 1em;max-width:66ch}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86em;overflow-wrap:anywhere}
+
+/* nav */
+nav{position:sticky;top:0;z-index:5;background:var(--cobalt);color:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px max(5vw,18px);flex-wrap:wrap}
+.mark{font-family:Anybody,system-ui,sans-serif;font-weight:900;font-stretch:130%;font-size:20px;text-decoration:none}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+nav a.nl{display:inline-block;padding:10px 12px;text-decoration:none;border-radius:999px;font-weight:500}
+nav a.nl:hover{background:rgba(255,255,255,.14)}
+
+/* hero */
+.hero{background:var(--cobalt);color:#fff;padding-top:clamp(32px,5vw,72px);padding-bottom:0}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:end}
+.name{font-size:clamp(54px,9vw,128px);font-stretch:68%;font-weight:900;letter-spacing:-.01em;line-height:.9}
+.name span{display:block;font-stretch:150%;font-size:.5em;letter-spacing:0;margin-top:.12em}
+.lede{font-size:clamp(19px,2vw,23px);line-height:1.45;margin:28px 0 28px;max-width:30ch}
+.lede mark{background:var(--hi);color:#0d1226;padding:0 .2em}
+.cta{display:flex;gap:12px;flex-wrap:wrap;padding-bottom:clamp(40px,6vw,88px)}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;font-weight:600;text-decoration:none;border:2px solid #fff}
+.btn.solid{background:#fff;color:var(--cobalt)}
+.btn:hover{background:var(--hi);border-color:var(--hi);color:#0d1226}
+
+/* receipt picture */
+.till{position:relative;align-self:stretch;min-height:700px}
+.slot{position:absolute;left:4%;right:4%;top:0;height:18px;border-radius:9px;background:var(--cobalt2);box-shadow:inset 0 4px 8px rgba(0,0,0,.35)}
+.rc{position:absolute;width:min(74%,330px);background:#fff;color:#0d1226;padding:20px 20px 26px;font-size:14px;line-height:1.45;
+ box-shadow:0 1px 0 #dfe3ee,0 24px 40px -18px rgba(5,10,40,.55);
+ -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 6px 0,transparent 5.5px,#000 6px) bottom/12px 10px repeat-x;
+ mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 6px 0,transparent 5.5px,#000 6px) bottom/12px 10px repeat-x}
+.rc b{font-family:Anybody,system-ui,sans-serif;font-weight:800;font-stretch:120%;font-size:19px;display:block}
+.rc .sub{color:#4b5370;font-size:13px;margin-bottom:10px;display:block}
+.rc dl{margin:0;border-top:1.5px dashed #9aa2bd;padding-top:10px;display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+.rc dt{color:#4b5370}.rc dd{margin:0;font-weight:600;text-align:right;white-space:nowrap}
+.rc .tot{border-top:1.5px dashed #9aa2bd;margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;font-weight:600}
+.rc .tot span:last-child{background:var(--hi);padding:0 6px}
+.r1{left:2%;top:10px;transform:rotate(-4deg);z-index:4}
+.r2{right:0;top:262px;transform:rotate(3deg);z-index:2}
+.r3{left:4%;top:470px;transform:rotate(-1deg);z-index:3}
+@media(prefers-reduced-motion:no-preference){
+ .rc{animation:print .9s cubic-bezier(.2,.7,.2,1) both}
+ .r1{animation-delay:.15s}.r2{animation-delay:.45s}.r3{animation-delay:.75s}
+ @keyframes print{from{clip-path:inset(0 0 100% 0);translate:0 -40px}to{clip-path:inset(0 0 0 0);translate:0 0}}}
+
+/* featured */
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.sec-head p{color:var(--muted);margin:0;max-width:44ch}
+.feat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);padding:clamp(24px,4vw,48px);background:var(--soft);border-radius:28px}
+.tag{display:inline-block;font-size:14px;font-weight:600;color:var(--cobalt);margin-bottom:12px}
+:root:not([data-theme=light]) .tag{color:light-dark(#2340d9,#8fa2ff)}
+.feat h3{font-size:clamp(40px,5vw,64px);font-stretch:130%;margin-bottom:16px}
+.quote{font-family:Anybody,system-ui,sans-serif;font-weight:700;font-stretch:90%;font-size:clamp(22px,2.4vw,28px);line-height:1.2;margin:0 0 18px;max-width:24ch}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.links a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:15px;background:var(--bg)}
+.links a:hover{border-color:var(--cobalt);background:var(--cobalt);color:#fff}
+.proof{list-style:none;margin:0;padding:0;align-self:center}
+.proof li{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:4px 18px;padding:16px 0;border-top:1px solid var(--line);align-items:baseline}
+.proof li:last-child{border-bottom:1px solid var(--line)}
+.proof .n{font-family:Anybody,system-ui,sans-serif;font-weight:900;font-stretch:75%;font-size:clamp(34px,4vw,48px);line-height:1;white-space:nowrap}
+.proof .t{color:var(--muted);font-size:15px;line-height:1.45}
+
+/* pair */
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,32px);margin-top:clamp(20px,3vw,32px)}
+.card{border:1.5px solid var(--line);border-radius:28px;padding:clamp(22px,3vw,36px);display:flex;flex-direction:column}
+.card p{color:var(--muted)}
+.card .proof{margin-top:auto}
+.card .proof .n{font-size:clamp(30px,3.4vw,40px)}
+.cmd{display:block;background:var(--pink);color:#e9ecf7;padding:12px 14px;border-radius:12px;margin:4px 0 16px}
+
+/* ledger */
+.ledger{margin-top:clamp(48px,6vw,80px)}
+.ledger h3{font-size:clamp(24px,2.6vw,30px);margin-bottom:10px}
+.row{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr) minmax(0,17rem);gap:12px 32px;padding:26px 0;border-top:1px solid var(--line);align-items:start}
+.row:last-child{border-bottom:1px solid var(--line)}
+.row h4{font-family:Anybody,system-ui,sans-serif;font-weight:800;font-stretch:120%;font-size:26px;margin:0;line-height:1.1}
+.row .ev{font-size:14px;color:var(--muted);margin-top:6px}
+.row p{margin:0 0 .4em}
+.row .fig{font-weight:600}
+.row .links{margin-top:0;justify-content:flex-end}
+.row .links a{min-height:40px;font-size:14px}
+
+/* about */
+.about{background:var(--cobalt);color:#fff}
+.about .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(28px,5vw,72px)}
+.about h2{color:#fff}
+.about p{font-size:18px}
+.about ul{margin:0;padding:0;list-style:none}
+.about li{padding:14px 0;border-top:1px solid rgba(255,255,255,.25)}
+.about li b{display:block;font-family:Anybody,system-ui,sans-serif;font-stretch:115%;font-size:19px}
+
+/* contact */
+.contact .wrap{display:flex;justify-content:space-between;align-items:end;gap:28px;flex-wrap:wrap}
+.contact h2{font-size:clamp(40px,7vw,88px);font-stretch:70%;font-weight:900;max-width:12ch}
+.contact .links a{min-height:52px;font-size:16px}
+footer{padding:22px max(5vw,18px);color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+
+@media(max-width:900px){
+ .hero .wrap,.feat,.about .wrap{grid-template-columns:minmax(0,1fr)}
+ .till{min-height:470px}
+ .row{grid-template-columns:minmax(0,1fr)}
+ .row .links{justify-content:flex-start}
+}
+@media(max-width:600px){
+ .pair{grid-template-columns:minmax(0,1fr)}
+ .till{min-height:0;display:flex;flex-direction:column;padding:34px 0 28px}
+ .rc{position:relative;width:88%;left:auto;right:auto;top:auto}
+ .r1{align-self:flex-start}.r2{align-self:flex-end;margin-top:-14px}.r3{align-self:center;margin-top:-14px}
+ nav ul{gap:0}
+}
+</style>
+</head>
+<body>
+<nav aria-label="Main">
+ <div class="wrap">
+  <a class="mark" href="#top">Eddy</a>
+  <ul>
+   <li><a class="nl" href="#work">Work</a></li>
+   <li><a class="nl" href="#about">About</a></li>
+   <li><a class="nl" href="#contact">Contact</a></li>
+  </ul>
+ </div>
+</nav>
+
+<header class="band hero" id="top">
+ <div class="wrap">
+  <div>
+   <h1 class="name">Ediong Udotong<span>builds what holds the money</span></h1>
+   <p class="lede">I build software that moves money, and AI agents with limits <mark>a contract enforces</mark>.</p>
+   <div class="cta">
+    <a class="btn solid" href="#work">See the builds</a>
+    <a class="btn" href="https://github.com/UEddy" target="_blank" rel="noopener">GitHub</a>
+   </div>
+  </div>
+  <div class="till" aria-label="Receipts from three builds">
+   <div class="slot"></div>
+   <div class="rc r1">
+    <b>Intatto</b><span class="sub">NEAR mainnet, public agent key</span>
+    <dl><dt>Attacks signed</dt><dd>13</dd><dt>Refused by policy</dt><dd>12</dd><dt>Bad arguments</dt><dd>1</dd></dl>
+    <div class="tot"><span>NEAR moved</span><span>0</span></div>
+   </div>
+   <div class="rc r2">
+    <b>Kataa</b><span class="sub">3.35B model, 300 held-out tasks</span>
+    <dl><dt>Unsafe, base</dt><dd>61.0%</dd><dt>Unsafe, Kataa</dt><dd>25.0%</dd><dt>Accuracy, base</dt><dd>19.0%</dd></dl>
+    <div class="tot"><span>Accuracy, Kataa</span><span>73.0%</span></div>
+   </div>
+   <div class="rc r3">
+    <b>NivGuard</b><span class="sub">Arc testnet, recorded run</span>
+    <dl><dt>Payments tried</dt><dd>7</dd><dt>Allowed</dt><dd>3</dd><dt>Tests passing</dt><dd>87</dd></dl>
+    <div class="tot"><span>Rejected by contract</span><span>4</span></div>
+   </div>
+  </div>
+ </div>
+</header>
+
+<main>
+<section class="band" id="work" aria-labelledby="work-h">
+ <div class="wrap">
+  <div class="sec-head">
+   <h2 id="work-h">Selected builds</h2>
+   <p>Each one is public, with the transactions, test runs and numbers behind it linked from its repo.</p>
+  </div>
+
+  <article class="feat">
+   <div>
+    <span class="tag">NEAR Hackathon, AI Security &amp; Defense track</span>
+    <h3>Intatto</h3>
+    <p class="quote">The agent's key is public. Take the money if you can.</p>
+    <p>A NEAR vault that gives an AI agent its own trading account. The agent trades through Rhea and NEAR Intents within limits the contract enforces, and it can never withdraw. Intent swaps are signed by the NEAR MPC network for the vault, and each AI decision's signed receipt sits in the trade's own transaction.</p>
+    <div class="links">
+     <a href="https://intatto.pages.dev/?network=mainnet" target="_blank" rel="noopener">Live board</a>
+     <a href="https://github.com/UEddy/Intatto" target="_blank" rel="noopener">Code</a>
+    </div>
+   </div>
+   <ul class="proof">
+    <li><span class="n">0.99761</span><span class="t">NEAR on mainnet behind an agent key anyone can read</span></li>
+    <li><span class="n">13 of 13</span><span class="t">attack transactions signed with that key failed; nothing moved</span></li>
+    <li><span class="n">10s</span><span class="t">how often the running contract is checked against its reproducible build</span></li>
+   </ul>
+  </article>
+
+  <div class="pair">
+   <article class="card">
+    <span class="tag">Hermes Agent plugin, Nous Research</span>
+    <h3>Obol</h3>
+    <p>Safe invoicing from chat. Forward a client's message, approve the draft, get paid. Every invoice needs your approval, and Obol flags lookalike domains, impersonated clients and instructions hidden in forwarded messages.</p>
+    <code class="cmd">hermes plugins install ueddy/obol</code>
+    <ul class="proof">
+     <li><span class="n">230+</span><span class="t">tests, no keys needed</span></li>
+     <li><span class="n">Listed</span><span class="t">in the official Hermes plugin catalog</span></li>
+    </ul>
+    <div class="links">
+     <a href="https://github.com/UEddy/Obol" target="_blank" rel="noopener">Code</a>
+     <a href="https://x.com/DeFiRanch/status/2118752233315791051" target="_blank" rel="noopener">70s demo</a>
+    </div>
+   </article>
+   <article class="card">
+    <span class="tag">Lexsi Labs AI Safety hackathon</span>
+    <h3>Kataa</h3>
+    <p>Tiny Aya Global fine-tuned to issue a margin call on a crypto-backed loan only when the contract and prices justify it, and to refuse manipulated, stale or contradictory requests. The write-up reports where it still fails.</p>
+    <ul class="proof">
+     <li><span class="n">61% to 25%</span><span class="t">unsafe decisions on held-out attacks</span></li>
+     <li><span class="n">19% to 73%</span><span class="t">accuracy on the same 300 tasks</span></li>
+    </ul>
+    <div class="links">
+     <a href="https://github.com/UEddy/Kataa" target="_blank" rel="noopener">Code</a>
+     <a href="https://huggingface.co/spaces/JustEddy1/kataa-demo" target="_blank" rel="noopener">Replay demo</a>
+    </div>
+   </article>
+  </div>
+
+  <div class="ledger">
+   <h3>More builds</h3>
+   <div id="rows"></div>
+  </div>
+ </div>
+</section>
+
+<section class="band about" id="about" aria-labelledby="about-h">
+ <div class="wrap">
+  <div>
+   <h2 id="about-h">About</h2>
+  </div>
+  <div>
+   <p>I'm Eddy. I studied Mechanical Engineering at the University of Uyo, spent about four years on growth, community and content for Web3 projects, then started building full time.</p>
+   <p>Most of what I ship handles money or lets an agent act on someone's behalf, so I build the limits first and publish the evidence: the transaction, the test run, and a plain list of what is real and what is still a mock.</p>
+   <ul>
+    <li><b>Founder, Nivaria</b>AI competitive intelligence SaaS for B2B sales and RevOps teams. Built and launched solo; now parked.</li>
+    <li><b>Web3 growth and community</b>io.net, Folks Finance, Recall</li>
+    <li><b>Stack I ship with</b>TypeScript, Solidity, Rust, Python; NEAR, EVM chains, Hugging Face</li>
+   </ul>
+  </div>
+ </div>
+</section>
+
+<section class="band contact" id="contact" aria-labelledby="contact-h">
+ <div class="wrap">
+  <h2 id="contact-h">Building something that touches money?</h2>
+  <div class="links">
+   <a href="https://x.com/DeFiRanch" target="_blank" rel="noopener">X @DeFiRanch</a>
+   <a href="https://www.linkedin.com/in/ediong-u-729a1a405" target="_blank" rel="noopener">LinkedIn</a>
+   <a href="https://github.com/UEddy" target="_blank" rel="noopener">GitHub</a>
+  </div>
+ </div>
+</section>
+</main>
+<footer><div class="wrap">Ediong Udotong, Uyo, Nigeria</div></footer>
+
+<script>
+{
+const builds=[
+ {n:"NivPay",ev:"Monad Metropolis",d:"Shared pots for families spread across countries: money in from anyone, out only to fixed payees when enough named people approve. Passkey sign-up, no seed phrase, gas covered.",f:"A filmed $25 send settled in 2.2 seconds",l:[["Live app","https://nivpay.vercel.app"],["Code","https://github.com/UEddy/nivpay"]]},
+ {n:"Revolve",ev:"ZECATHON",d:"Buy tokens and tokenized stocks with shielded ZEC from one phone app. Each position lands in its own fresh wallet, so nothing points back to your Zcash. No account, no wallet connection, a passkey vault on the phone.",f:"Buying, private cash-out and withdrawal to shielded ZEC run on mainnet",l:[["Live app","https://revolveapp-phi.vercel.app"],["Code","https://github.com/UEddy/revolve"]]},
+ {n:"Egress",ev:"Arbitrum Open House",d:"Lending limits for tokenized stocks on Robinhood Chain. It measures onchain how much of a stock could really be sold in a crash and stops new lending before loans outgrow that market.",f:"Found $301k of AAPL pledged against $195k sellable within 5%; 72 tests",l:[["Live site","https://egress-theta.vercel.app"],["Code","https://github.com/UEddy/egress"]]},
+ {n:"Escal",ev:"Sibyl Labs hackathon",d:"An escalation memory for support agents. It remembers what stalled the agent and what the human decided, so the hundredth identical handoff stops costing a human.",f:"Placed 13th of 92 teams; 292 tests",l:[["Code","https://github.com/UEddy/Escal"]]},
+ {n:"NivGuard",ev:"Encode, Build on Arc",d:"An onchain spend firewall for AI agents: per-agent budgets, merchant allowlists, per-payment caps and one-transaction revoke, enforced on every USDC transfer.",f:"7 real payments, 4 rejected by the contract; 87 tests",l:[["Live dashboard","https://nivguard.netlify.app"],["Code","https://github.com/UEddy/nivguard"]]},
+ {n:"Onya",ev:"Meta AI hackathon",d:"Covenant monitoring for private credit, run on public SEC filings. It recalculates covenant ratios from the agreement's own math and shows which quarter breaks.",f:"Its Sleep Number leverage figure reconciles to the company's reported covenant EBITDA to the dollar",l:[["Live site","https://onya-g8f4.vercel.app"],["Code","https://github.com/UEddy/Onya"]]},
+ {n:"GreenLight",ev:"OKX X Layer, AI Season",d:"An honest travel agent for weak-passport holders: go, marginal or abort before you pay a visa fee, built only on published UK, US and Schengen refusal data, with trip money in escrow on X Layer.",f:"116 offline tests; escrow verified onchain",l:[["Live site","https://greenlight-frontend-nine.vercel.app"],["Code","https://github.com/UEddy/Greenlight"]]},
+ {n:"Investire",ev:"Stocklana, Solana",d:"Recurring savings plans for tokenized stocks: pick an amount and a pace, and it buys slices of shares with USDC, with balances kept correct across different issuers' tokens.",f:"Live on Solana devnet, with pitch and technical videos",l:[["Live demo","https://investire.vercel.app"],["Code","https://github.com/UEddy/investire"]]}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+document.getElementById("rows").innerHTML=builds.map(b=>`<div class="row"><div><h4>${esc(b.n)}</h4><div class="ev">${esc(b.ev)}</div></div><div><p>${esc(b.d)}</p><p class="fig">${esc(b.f)}</p></div><div class="links">${b.l.map(([t,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join("")}</div></div>`).join("");
+}
+</script>
+</body>
+</html>
